@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+        <script src="js/jquery.js"></script>
+        <style>
+            body{
+                background-color: #c3c3c3;;
+            }
+            #message-container{
+                position: fixed;
+                bottom: 10px;
+                background: #616161;
+                height: 100px;
+                display: flex;
+                justify-content: center;
+                width: 1300px;
+                max-width: 100%;
+                margin-left:-8px;
+                margin-right: 0px;
+            }
+            #message{
+                padding: 12px;
+                margin: 29px 30px;
+                flex:2
+            }
+            #message_submit{
+                height: 50px;
+                margin: auto 40px;
+                width: 100px;
+            }
+            #user_message{
+                background: #c3c3c3;
+                height: 420px;
+                display: flex;
+                flex-direction: column;
+                overflow: auto;
+                margin-top:0px;
+            }
+            .send_message{
+                list-style-type: none;
+                background-color: whitesmoke;
+                padding: 10px 20px;
+                margin-left: -40px;
+                margin-top:10px;
+                margin-bottom: 0px;
+                text-align: right;
+            }
+            .receive_message{
+                list-style-type: none;
+                background-color: whitesmoke;
+                padding: 10px 20px;
+                margin-left: -40px;
+                margin-top:10px;
+                margin-bottom: 0px;
+                text-align: left;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <ul id="user_message">
+            <% if(messages.length){ %>
+               <% for(var i = 0; i< messages.length; i++) {%> 
+                    <% if(messages[i].sender == sender &&  messages[i].receiver == receiver){ %>
+                       <li class="send_message"><%= messages[i].message%></li>
+                    <% } %>
+                    <% if(messages[i].sender == receiver &&  messages[i].receiver == sender ){ %>
+                        <li class="receive_message"><%= messages[i].message%></li>
+                    <% } %>
+                  <% } %>
+               <% } %> 
+        </ul>
+        <form id="message-container">
+            <input type="hidden" value="<%=sender%>" id="loginids" name="loginids">
+            <input type="hidden" value="<%=receiver%>" id="sendto" name="sendto"> 
+            <input id="message" placeholder="Enter the message" autocomplete="off">
+            <input id="message_submit" type="submit">
+        </form>
+        <script>
+           const socket = io("http://localhost:3000");
+           const messageForm= document.getElementById("message-container");
+           messageForm.addEventListener('submit', e => {
+              e.preventDefault() 
+              
+              var message= document.getElementById("message").value
+              var receiver= document.getElementById("sendto").value
+              var sender= document.getElementById("loginids").value
+             
+              //var user= document.getElementById("usersocket").value
+            //   alert(user)
+              socket.emit("send-message", {message:message, receiver:receiver, sender:sender})
+              document.getElementById("message").value=''
+              var html= "";
+              html += "<li class='send_message'>" + message + "</li>";
+              document.getElementById("user_message").innerHTML += html
+            
+         })
+
+         socket.on("message", function(data){
+            var sender= document.getElementById("loginids").value;
+            var receiver= document.getElementById("sendto").value;
+            //alert("ososos")
+            if(data.receiver === sender){
+               var html= "";
+               html += "<li class='receive_message'>"  + data.message + "</li>";
+               document.getElementById("user_message").innerHTML += html
+             }
+         })
+        </script>
+    </body>

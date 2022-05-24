@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+        <script src="js/jquery.js"></script>
+        <style>
+               body {background-color: lightgray;}
+               .userlist{
+                   list-style-type: none;
+                   margin-left: 0px;
+            }
+                li{
+                   list-style-type: none;
+            }
+               .reglist{
+                   background-color: darkgray;
+                   width:200px;
+                   padding: 10px;
+                   margin-left: -30px;
+                   margin-right:20px;
+            }
+                .reglist li{
+                    padding-right: 10px;
+                }
+                .reglist li:hover{
+                   background-color: white;
+
+                }
+                .user_head{
+                   padding-left: 30px;
+
+            }
+                .message-container{
+                    padding-top: 20px;
+            }
+                #user_message li{
+                   padding-bottom:5px;
+                   margin-left: -35px;
+            }
+                #user_message li:hover{
+                    background-color: white;
+                }
+        </style>
+    </head>
+    <body>
+        <form id="name-container">
+            <input id="name" placeholder="Enter your name">
+            <input type="submit">
+        </form>
+         <ul id="users"></ul>
+         
+         
+         <div class="reglist">
+            <h3 class="user_head">Users</h3>
+         <% if(list.length){
+            for(var i = 0; i< list.length; i++) {%> 
+                <ul>
+                   <li class="userlist"><%= list[i].username%></li>
+               </ul>
+            <% }
+                     
+             }else{ %>
+                 <ul>
+                    <li>No user</li>
+                 </ul>
+              <% } %> 
+         </div>   
+        <form id="message-container">
+            <input id="message" placeholder="Enter message">
+            <input type="submit">
+        </form>
+        <ul id="user_message"></ul>
+        <script>
+            const socket = io("http://localhost:3000");
+            var receiver= "";
+            var sender= "";
+
+            const nameForm= document.getElementById("name-container");
+            const messageForm= document.getElementById("message-container");
+            const usersList= document.getElementById("users")
+            nameForm.addEventListener('submit', e => {
+                e.preventDefault() 
+                var username= document.getElementById("name").value
+                socket.emit("user-connected", username)
+                sender= username;
+                document.getElementById("name").value=''
+             }) 
+
+               socket.on("user-connected", function(username){
+                  // appendName(`* ${username}`);
+                  var html= "";
+                  html += "<li><button onclick='onUserSelected(this.innerHTML);'>" + username + "</button></li>";
+                  document.getElementById("users").innerHTML += html
+            })
+            function onUserSelected(username){
+                 receiver= username
+            } 
+            messageForm.addEventListener('submit', e => {
+                e.preventDefault() 
+                var message= document.getElementById("message").value
+                socket.emit("send-message", {
+                    sender:sender,
+                    receiver:receiver,
+                    message:message
+                })
+                document.getElementById("message").value=''
+                var html= "";
+                html += "<li>" +  "You" +  "  :  " + message + "</li>";
+                document.getElementById("user_message").innerHTML += html
+                
+             })
+
+             socket.on("message", function(data){
+                var html= "";
+                  html += "<li>" +  data.sender +  "  :  " + data.message + "</li>";
+                  document.getElementById("user_message").innerHTML += html
+             })
+
+           // function appendName(username) {
+             //   const nameElement = document.createElement('div')
+               // nameElement.innerText = username
+               // usersList.append(nameElement)
+            //}
+        </script>
+
+    </body>
+</html>

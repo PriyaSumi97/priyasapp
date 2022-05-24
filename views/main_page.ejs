@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+        <script src="js/jquery.js"></script>
+        <style>
+            body{
+                background-color: darkgray;
+            }
+               .userlist {
+                   list-style-type: none;
+                   background-color: lightgray;
+                   width:1300px;
+                   max-width: 100%;
+                   padding: 20px 30px;
+                   margin-left: -40px;
+                   margin-top:10px;
+            }
+            
+                .userlist:hover{
+                   background-color: white;
+
+                }
+                .user_head{
+                    color:aqua;
+                }
+        </style>
+    </head>
+    <body>
+        <div class="reglist">
+            <h3 class="user_head">ChAt-ApP</h3>
+         <% if(list.length){
+            for(var i = 0; i< list.length; i++) {%> 
+                <ul>
+                   <li class="userlist"><a href=''><%= list[i].username%></a></li>
+               </ul>
+            <% }
+                     
+             }else{ %>
+                 <ul>
+                    <li>No user</li>
+                 </ul>
+              <% } %> 
+         </div> 
+    </body>
+    <script>
+
+    </script>
+</html>

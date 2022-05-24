@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+        <script src="js/jquery.js"></script>
+        <style>
+            body{
+                background-color: white;
+            }
+          
+            input[type=text], input[type=password] {
+                 max-width: 400px;
+                 width: 100%;
+                 padding: 12px 20px;
+                 margin: 8px 0;
+                 display: inline-block;
+                 border: 1px solid #ccc;
+                 box-sizing: border-box;
+            }
+
+            button {
+                 background-color: hsl(147, 95%, 34%);
+                 color: white;
+                 padding: 14px 20px;
+                 margin: 8px 0;
+                 border: none;
+                 cursor: pointer;
+                 max-width: 400px;
+                 width: 100%;
+            }
+
+            button:hover {
+                 background-color: green;
+             }
+             .container {
+                 padding: 16px;
+             }
+             .section1{
+                max-width: 300px;
+                margin: auto;
+                background: lightgray;
+                padding: 10px;
+             }
+             .login_user {
+                   color:black;
+                   padding: 12px 20px;
+                   margin-left: 0px;
+                   margin-top:0px;
+                   width:700px;
+                   max-width: 100%;
+            }
+            
+                .login_user:hover{
+                   background-color: white;
+
+                }
+                .user_head{
+                    color:aqua;
+                }
+                #wrong-user{
+                    color:red;
+                }
+
+            
+        </style>
+    </head>
+    <body>
+        <div class="section1">
+         <form id="login_form" method="post" action="/loginuser">
+            <div class="container">
+              <label for="uname"><b>Username</b></label><br>
+              <input type="text" id="name" placeholder="Enter Username" name="username" autocomplete="off" required><br>
+          
+              <label for="psw"><b>Password</b></label><br>
+              <input type="password" id="password" placeholder="Enter Password" name="password" required><br>
+                  
+              <button type="submit" id="button">Login</button>
+            </div>
+          </form>
+         <h2 id="wrong-user"></h2>
+         <div id="loginlist"></div>
+         
+        </div>
+        <!-- <script>
+            const socket = io("http://localhost:3000");
+            const loginForm = document.getElementById("login_form");
+            const loginlist = document.getElementById("loginlist");
+            loginForm.addEventListener('submit', e => {
+               e.preventDefault()
+               var username= document.getElementById("name").value
+               var password= document.getElementById("password").value
+               socket.emit("user_login", {username:username, password:password})
+               document.getElementById("name").value='';
+               document.getElementById("password").value='';
+            })
+            socket.on("login_user", function(data){
+                var html= "";
+                html += "<a href='/chat_app' class='login_user'>"  + data.username + "</a><br><br>";
+                document.getElementById("loginlist").innerHTML += html
+            })
+            socket.on("wrong-user", function(message){
+                 document.getElementById("wrong-user").innerHTML=message
+            })
+
+        </script> -->
+    </body>
+</html>
